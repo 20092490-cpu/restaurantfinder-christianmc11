@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RestaurantFinder">
         <activity
-            android:name=".MainActivity"
+            android:name=".LandingActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.RestaurantFinder">
@@ -22,6 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".MainActivity" />
+
     </application>
 
 </manifest>

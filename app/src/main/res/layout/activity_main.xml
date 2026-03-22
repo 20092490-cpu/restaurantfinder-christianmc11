@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:background="?attr/colorPrimary"
+        android:title="Home - Restaurants"
+        android:titleTextColor="#FFFFFF" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/home_restaurants"
+        android:textSize="24sp" />
+
+    <ListView
+        android:id="@+id/list_restaurants"
+        android:layout_width="match_parent"
+        android:layout_height="183dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Map View"
+        android:textSize="24sp" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView3"
+        android:layout_width="match_parent"
+        android:layout_height="231dp"
+        android:background="#9AD7A8"
+        android:fadingEdge="horizontal|vertical|none" />
 
 </LinearLayout>
