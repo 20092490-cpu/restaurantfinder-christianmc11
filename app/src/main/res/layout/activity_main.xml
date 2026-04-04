@@ -10,25 +10,34 @@
         android:layout_width="match_parent"
         android:layout_height="88dp"
         android:background="?attr/colorPrimary"
-        android:title="Home - Restaurants"
+        android:title="Home - Favourites"
         android:titleTextColor="#FFFFFF" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/home_restaurants"
+        android:text="HOME - FAVOURITES"
+        android:background="#2196F3"
         android:textSize="24sp" />
 
     <ListView
         android:id="@+id/list_restaurants"
         android:layout_width="match_parent"
-        android:layout_height="183dp" />
+        android:layout_height="194dp" />
+
+    <Button
+        android:id="@+id/button_add_favourite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#21C9F3"
+        android:text="ADD FAVOURITE" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Map View"
+        android:background="#2196F3"
         android:textSize="24sp" />
 
     <com.google.android.gms.maps.MapView
@@ -37,5 +46,13 @@
         android:layout_height="231dp"
         android:background="#9AD7A8"
         android:fadingEdge="horizontal|vertical|none" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Map Results"
+        android:background="#2196F3"
+        android:textSize="24sp" />
 
 </LinearLayout>
