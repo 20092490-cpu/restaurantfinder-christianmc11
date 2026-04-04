@@ -23,16 +23,19 @@ class MainActivity : AppCompatActivity() {
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
         myListView.adapter = adapter
 
+        loadInitialData(adapter)  // New call
+
+        findViewById<Button>(R.id.button_add_favourite).setOnClickListener { showAddDialog(adapter) }
+    }
+
+    private fun loadInitialData(adapter: ArrayAdapter<String>) {
         if (restaurants.isEmpty()) {
             restaurants.add(Restaurant("Kamboat", "The Quay"))
             restaurants.add(Restaurant("Indian Ocean", "456 Street"))
             restaurants.add(Restaurant("Pearls", "Main Street"))
         }
-
         adapter.clear()
         for (r in restaurants) adapter.add(r.name)
-
-        findViewById<Button>(R.id.button_add_favourite).setOnClickListener { showAddDialog(adapter) }
     }
 
     fun showAddDialog(adapter: ArrayAdapter<String>) {
@@ -46,9 +49,10 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("Add") { _, _ ->
                 val name = nameInput.text.toString()
                 val address = addressInput.text.toString()
-                if (name != "" && address != "") {
+                if (name != "" && address != "") {  // Basic validation later
                     restaurants.add(Restaurant(name, address))
-                    adapter.add(name)
+                    adapter.add(name)  // Refresh list
+                    adapter.notifyDataSetChanged()  // Add this!
                 }
             }
             .setNegativeButton("Cancel", null)
