@@ -20,18 +20,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar).let { setSupportActionBar(it) }
+        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
 
         val myListView = findViewById<ListView>(R.id.list_restaurants)
-        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
-        myListView.adapter = adapter
+        val adapter = RestaurantAdapter()
+        myListView.adapter = adapter as android.widget.ListAdapter
 
         loadInitialData(adapter)
 
         findViewById<Button>(R.id.button_add_favourite).setOnClickListener { showAddDialog(adapter) }
     }
 
-    private fun loadInitialData(adapter: ArrayAdapter<String>) {
+    private fun loadInitialData(adapter: RestaurantAdapter) {
         if (restaurants.isEmpty()) {
             restaurants.add(Restaurant("Kamboat", "The Quay"))
             restaurants.add(Restaurant("Indian Ocean", "456 Street"))
@@ -39,10 +39,10 @@ class MainActivity : AppCompatActivity() {
         }
         adapter.clear()
         adapter.notifyDataSetChanged()
-        for (r in restaurants) adapter.add(r.name)
+        adapter.addAll(restaurants)
     }
 
-    fun showAddDialog(adapter: ArrayAdapter<String>) {
+    private fun showAddDialog(adapter: RestaurantAdapter) {
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_add_restaurant, null)
         val nameInput = view.findViewById<EditText>(R.id.edit_name)
         val addressInput = view.findViewById<EditText>(R.id.edit_address)
@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
                 val address = addressInput.text.toString()
                 if (name != "" && address != "") {
                     restaurants.add(Restaurant(name, address))
-                    adapter.add(name)
                     adapter.notifyDataSetChanged()
                 }
             }
