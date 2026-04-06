@@ -15,12 +15,14 @@ import android.view.View
 class MainActivity : AppCompatActivity() {
 
     val restaurants = mutableListOf<Restaurant>()
+    private lateinit var repository: RestaurantRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        repository = RestaurantRepository(this)
 
         val myListView = findViewById<ListView>(R.id.list_restaurants)
         val adapter = RestaurantAdapter()
@@ -36,10 +38,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadInitialData(adapter: RestaurantAdapter) {
+        val saved = repository.load()
+        if (saved.isNotEmpty()) {
+            restaurants.addAll(saved)
+        }
+
         if (restaurants.isEmpty()) {
-            restaurants.add(Restaurant("Kamboat", "The Quay"))
-            restaurants.add(Restaurant("Indian Ocean", "456 Street"))
-            restaurants.add(Restaurant("Pearls", "Main Street"))
+            repository.save(restaurants)
         }
         adapter.clear()
         adapter.notifyDataSetChanged()
@@ -59,6 +64,7 @@ class MainActivity : AppCompatActivity() {
                 val address = addressInput.text.toString()
                 if (name != "" && address != "") {
                     restaurants.add(Restaurant(name, address))
+                    repository.save(restaurants)
                     adapter.notifyDataSetChanged()
                 }
             }
@@ -82,6 +88,7 @@ class MainActivity : AppCompatActivity() {
                 val address = addressInput.text.toString()
                 if (name != "" && address != "") {
                     restaurants[position] = Restaurant(name, address)
+                    repository.save(restaurants)
                     adapter.notifyDataSetChanged()
                 }
             }
@@ -100,6 +107,7 @@ class MainActivity : AppCompatActivity() {
             }
             view.findViewById<Button>(R.id.button_delete).setOnClickListener {
                 restaurants.removeAt(position)
+                repository.save(restaurants)
                 notifyDataSetChanged()
             }
             return view
