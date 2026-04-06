@@ -25,6 +25,10 @@ class MainActivity : AppCompatActivity() {
         val myListView = findViewById<ListView>(R.id.list_restaurants)
         val adapter = RestaurantAdapter()
         myListView.adapter = adapter as android.widget.ListAdapter
+        myListView.setOnItemLongClickListener { _, _, position, _ ->
+            showEditDialog(position, adapter as RestaurantAdapter)
+            true
+        }
 
         loadInitialData(adapter)
 
@@ -62,12 +66,42 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun showEditDialog(position: Int, adapter: RestaurantAdapter) {
+        val restaurant = restaurants[position]
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_add_restaurant, null)
+        val nameInput = view.findViewById<EditText>(R.id.edit_name)
+        val addressInput = view.findViewById<EditText>(R.id.edit_address)
+        nameInput.setText(restaurant.name)
+        addressInput.setText(restaurant.address)
+
+        AlertDialog.Builder(this)
+            .setTitle("Edit Restaurant")
+            .setView(view)
+            .setPositiveButton("Save") { _, _ ->
+                val name = nameInput.text.toString()
+                val address = addressInput.text.toString()
+                if (name != "" && address != "") {
+                    restaurants[position] = Restaurant(name, address)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
     private inner class RestaurantAdapter : ArrayAdapter<Restaurant>(this, 0, restaurants) {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, parent, false)
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_restaurant, parent, false)
             val restaurant = getItem(position)!!
-            view.findViewById<TextView>(android.R.id.text1).text = restaurant.name
-            view.findViewById<TextView>(android.R.id.text2).text = restaurant.address
+            view.findViewById<TextView>(R.id.text_name).text = restaurant.name
+            view.findViewById<TextView>(R.id.text_address).text = restaurant.address
+            view.findViewById<Button>(R.id.button_edit).setOnClickListener {
+                showEditDialog(position, this)
+            }
+            view.findViewById<Button>(R.id.button_delete).setOnClickListener {
+                restaurants.removeAt(position)
+                notifyDataSetChanged()
+            }
             return view
         }
     }
