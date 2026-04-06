@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     val displayRestaurants = mutableListOf<Restaurant>()
     private lateinit var repository: RestaurantRepository
     private lateinit var searchBox: EditText
+    private lateinit var adapter: RestaurantAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,17 @@ class MainActivity : AppCompatActivity() {
         repository = RestaurantRepository(this)
 
         val myListView = findViewById<ListView>(R.id.list_restaurants)
-        val adapter = RestaurantAdapter()
+        adapter = RestaurantAdapter(
+            this,
+            restaurants,
+            displayRestaurants,
+            onEdit = { position -> showEditDialog(position) },
+            onDelete = { position ->
+                restaurants.removeAt(position)
+                repository.save(restaurants)
+                filterRestaurants(searchBox.text.toString())
+            }
+        )
         myListView.adapter = adapter as android.widget.ListAdapter
 
         searchBox = findViewById<EditText>(R.id.edit_search)
@@ -36,27 +47,23 @@ class MainActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: android.text.Editable?) {
-                filterRestaurants(s.toString(), adapter)
+                filterRestaurants(s.toString())
             }
         })
         myListView.adapter = adapter as android.widget.ListAdapter
-        myListView.setOnItemLongClickListener { _, _, position, _ ->
-            showEditDialog(position, adapter as RestaurantAdapter)
-            true
-        }
 
-        loadInitialData(adapter)
+        loadInitialData()
 
         findViewById<Button>(R.id.button_add_favourite).setOnClickListener { showAddDialog(adapter) }
 
         findViewById<Button>(R.id.button_sort).setOnClickListener {
             restaurants.sortBy { it.name }
             repository.save(restaurants)
-            filterRestaurants(searchBox.text.toString(), adapter as RestaurantAdapter)
+            filterRestaurants(searchBox.text.toString())
         }
     }
 
-    private fun loadInitialData(adapter: RestaurantAdapter) {
+    private fun loadInitialData() {
         val saved = repository.load()
         if (saved.isNotEmpty()) {
             restaurants.addAll(saved)
@@ -65,11 +72,10 @@ class MainActivity : AppCompatActivity() {
         if (restaurants.isEmpty()) {
             repository.save(restaurants)
         }
-        displayRestaurants.addAll(restaurants)
-        adapter.notifyDataSetChanged()
+        filterRestaurants("")
     }
 
-    private fun filterRestaurants(query: String, adapter: RestaurantAdapter) {
+    private fun filterRestaurants(query: String) {
         displayRestaurants.clear()
         if (query.isBlank()) {
             displayRestaurants.addAll(restaurants)
@@ -98,7 +104,7 @@ class MainActivity : AppCompatActivity() {
                 if (name.isNotBlank() && address.isNotBlank()) {
                     restaurants.add(Restaurant(name, address))
                     repository.save(restaurants)
-                    filterRestaurants(searchBox.text.toString(), adapter as RestaurantAdapter)
+                    filterRestaurants(searchBox.text.toString())
                 } else {
                     Toast.makeText(this, "Name and address cannot be empty.", Toast.LENGTH_SHORT).show()
                 }
@@ -107,7 +113,7 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun showEditDialog(position: Int, adapter: RestaurantAdapter) {
+    private fun showEditDialog(position: Int) {
         val restaurant = restaurants[position]
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_add_restaurant, null)
         val nameInput = view.findViewById<EditText>(R.id.edit_name)
@@ -124,7 +130,7 @@ class MainActivity : AppCompatActivity() {
                 if (name.isNotBlank() && address.isNotBlank()) {
                     restaurants[position] = Restaurant(name, address)
                     repository.save(restaurants)
-                    filterRestaurants(searchBox.text.toString(), adapter as RestaurantAdapter)
+                    filterRestaurants(searchBox.text.toString())
                 } else {
                     Toast.makeText(this, "Name and address cannot be empty.", Toast.LENGTH_SHORT).show()
                 }
@@ -133,21 +139,5 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private inner class RestaurantAdapter : ArrayAdapter<Restaurant>(this, 0, displayRestaurants) {
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.item_restaurant, parent, false)
-            val restaurant = getItem(position)!!
-            view.findViewById<TextView>(R.id.text_name).text = restaurant.name
-            view.findViewById<TextView>(R.id.text_address).text = restaurant.address
-            view.findViewById<Button>(R.id.button_edit).setOnClickListener {
-                showEditDialog(position, this)
-            }
-            view.findViewById<Button>(R.id.button_delete).setOnClickListener {
-                restaurants.removeAt(position)
-                repository.save(restaurants)
-                filterRestaurants(searchBox.text.toString(), this)
-            }
-            return view
-        }
+
     }
-}
