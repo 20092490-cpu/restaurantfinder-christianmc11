@@ -20,6 +20,14 @@
         android:background="#2196F3"
         android:textSize="24sp" />
 
+    <EditText
+        android:id="@+id/edit_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search restaurants..."
+        android:padding="12dp"
+        android:inputType="text"/>
+
     <ListView
         android:id="@+id/list_restaurants"
         android:layout_width="match_parent"
@@ -31,6 +39,12 @@
         android:layout_height="wrap_content"
         android:background="#21C9F3"
         android:text="ADD FAVOURITE" />
+
+    <Button
+        android:id="@+id/button_sort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SORT A-Z" />
 
     <TextView
         android:id="@+id/textView2"
