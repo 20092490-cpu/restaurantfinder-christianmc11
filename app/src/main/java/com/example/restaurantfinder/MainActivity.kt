@@ -8,6 +8,9 @@ import android.widget.Button
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.widget.EditText
+import android.widget.TextView
+import android.view.ViewGroup
+import android.view.View
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
         myListView.adapter = adapter
 
-        loadInitialData(adapter)  // New call
+        loadInitialData(adapter)
 
         findViewById<Button>(R.id.button_add_favourite).setOnClickListener { showAddDialog(adapter) }
     }
@@ -35,6 +38,7 @@ class MainActivity : AppCompatActivity() {
             restaurants.add(Restaurant("Pearls", "Main Street"))
         }
         adapter.clear()
+        adapter.notifyDataSetChanged()
         for (r in restaurants) adapter.add(r.name)
     }
 
@@ -49,13 +53,23 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("Add") { _, _ ->
                 val name = nameInput.text.toString()
                 val address = addressInput.text.toString()
-                if (name != "" && address != "") {  // Basic validation later
+                if (name != "" && address != "") {
                     restaurants.add(Restaurant(name, address))
-                    adapter.add(name)  // Refresh list
-                    adapter.notifyDataSetChanged()  // Add this!
+                    adapter.add(name)
+                    adapter.notifyDataSetChanged()
                 }
             }
             .setNegativeButton("Cancel", null)
             .show()
+    }
+
+    private inner class RestaurantAdapter : ArrayAdapter<Restaurant>(this, 0, restaurants) {
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = convertView ?: LayoutInflater.from(context).inflate(android.R.layout.simple_list_item_2, parent, false)
+            val restaurant = getItem(position)!!
+            view.findViewById<TextView>(android.R.id.text1).text = restaurant.name
+            view.findViewById<TextView>(android.R.id.text2).text = restaurant.address
+            return view
+        }
     }
 }
