@@ -3,7 +3,8 @@ package com.example.restaurantfinder
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ArrayAdapter
-import android.widget.ListView
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.widget.Button
 import android.app.AlertDialog
 import android.view.LayoutInflater
@@ -28,9 +29,8 @@ class MainActivity : AppCompatActivity() {
         findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         repository = RestaurantRepository(this)
 
-        val myListView = findViewById<ListView>(R.id.list_restaurants)
+        val recyclerView = findViewById<RecyclerView>(R.id.list_restaurants)
         adapter = RestaurantAdapter(
-            this,
             restaurants,
             displayRestaurants,
             onEdit = { position -> showEditDialog(position) },
@@ -40,7 +40,8 @@ class MainActivity : AppCompatActivity() {
                 filterRestaurants(searchBox.text.toString())
             }
         )
-        myListView.adapter = adapter as android.widget.ListAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
 
         searchBox = findViewById<EditText>(R.id.edit_search)
         searchBox.addTextChangedListener(object : android.text.TextWatcher {
@@ -50,7 +51,6 @@ class MainActivity : AppCompatActivity() {
                 filterRestaurants(s.toString())
             }
         })
-        myListView.adapter = adapter as android.widget.ListAdapter
 
         loadInitialData()
 

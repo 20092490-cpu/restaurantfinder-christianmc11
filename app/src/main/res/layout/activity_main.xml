@@ -28,10 +28,10 @@
         android:padding="12dp"
         android:inputType="text"/>
 
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_restaurants"
         android:layout_width="match_parent"
-        android:layout_height="194dp" />
+        android:layout_height="250dp" />
 
     <Button
         android:id="@+id/button_add_favourite"
