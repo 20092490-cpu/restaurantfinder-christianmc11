@@ -35,8 +35,7 @@ class MainActivity : AppCompatActivity() {
             displayRestaurants,
             onEdit = { position -> showEditDialog(position) },
             onDelete = { position ->
-                restaurants.removeAt(position)
-                repository.save(restaurants)
+                repository.delete(restaurants, position)
                 filterRestaurants(searchBox.text.toString())
             }
         )
@@ -102,8 +101,7 @@ class MainActivity : AppCompatActivity() {
                 val name = nameInput.text.toString()
                 val address = addressInput.text.toString()
                 if (name.isNotBlank() && address.isNotBlank()) {
-                    restaurants.add(Restaurant(name, address))
-                    repository.save(restaurants)
+                    repository.add(restaurants, Restaurant(name, address))
                     filterRestaurants(searchBox.text.toString())
                 } else {
                     Toast.makeText(this, "Name and address cannot be empty.", Toast.LENGTH_SHORT).show()
@@ -128,8 +126,7 @@ class MainActivity : AppCompatActivity() {
                 val name = nameInput.text.toString()
                 val address = addressInput.text.toString()
                 if (name.isNotBlank() && address.isNotBlank()) {
-                    restaurants[position] = Restaurant(name, address)
-                    repository.save(restaurants)
+                    repository.update(restaurants, position, Restaurant(name, address))
                     filterRestaurants(searchBox.text.toString())
                 } else {
                     Toast.makeText(this, "Name and address cannot be empty.", Toast.LENGTH_SHORT).show()

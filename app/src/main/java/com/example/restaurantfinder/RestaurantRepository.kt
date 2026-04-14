@@ -20,4 +20,22 @@ class RestaurantRepository(private val context: Context) {
         val type = object : TypeToken<MutableList<Restaurant>>() {}.type
         return gson.fromJson(json, type)
     }
+
+    fun add(list: MutableList<Restaurant>, restaurant: Restaurant): MutableList<Restaurant> {
+        list.add(restaurant)
+        save(list)
+        return list
+    }
+
+    fun delete(list: MutableList<Restaurant>, position: Int): MutableList<Restaurant> {
+        list.removeAt(position)
+        save(list)
+        return list
+    }
+
+    fun update(list: MutableList<Restaurant>, position: Int, restaurant: Restaurant): MutableList<Restaurant> {
+        list[position] = restaurant
+        save(list)
+        return list
+    }
 }
