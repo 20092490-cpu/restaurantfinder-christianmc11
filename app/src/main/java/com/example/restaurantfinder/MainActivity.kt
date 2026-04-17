@@ -21,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var repository: RestaurantRepository
     private lateinit var searchBox: EditText
     private lateinit var adapter: RestaurantAdapter
+    private lateinit var mapView: com.google.android.gms.maps.MapView
+    private var googleMap: com.google.android.gms.maps.GoogleMap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +54,13 @@ class MainActivity : AppCompatActivity() {
         })
 
         loadInitialData()
+
+        mapView = findViewById(R.id.mapView3)
+        mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync { map ->
+            googleMap = map
+            updateMapMarkers()
+        }
 
         findViewById<Button>(R.id.button_add_favourite).setOnClickListener { showAddDialog(adapter) }
 
@@ -87,6 +96,43 @@ class MainActivity : AppCompatActivity() {
             }
         }
         adapter.notifyDataSetChanged()
+    }
+
+    private fun updateMapMarkers() {
+        googleMap?.clear()
+        for (restaurant in restaurants) {
+            googleMap?.addMarker(
+                com.google.android.gms.maps.model.MarkerOptions()
+                    .position(com.google.android.gms.maps.model.LatLng(restaurant.lat, restaurant.lng))
+                    .title(restaurant.name)
+                    .snippet(restaurant.address)
+            )
+        }
+        googleMap?.moveCamera(
+            com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(
+                com.google.android.gms.maps.model.LatLng(51.5074, -0.1278), 12f
+            )
+        )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
     }
 
     private fun showAddDialog(adapter: RestaurantAdapter) {

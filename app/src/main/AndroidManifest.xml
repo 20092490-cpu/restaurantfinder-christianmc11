@@ -11,6 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RestaurantFinder">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDa05bNUbHZ4UsZ-voAg4jMHXpSW3iL6vU"/>
         <activity
             android:name=".LandingActivity"
             android:exported="true"
