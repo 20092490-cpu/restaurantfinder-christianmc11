@@ -7,7 +7,7 @@ Features
 - Search and filter restaurants by name or address
 - Sort restaurants A-Z
 - Interactive Google Maps view 
-- Data persists between app sessions
+- Data persists between app sessions via JSON in shared preferences
 
 Technical Details
 - Built with Kotlin
