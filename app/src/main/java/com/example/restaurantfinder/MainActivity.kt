@@ -28,7 +28,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        val tabLayout = findViewById<com.google.android.material.tabs.TabLayout>(R.id.tab_layout)
+        tabLayout.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) {
+                if (tab?.position == 1) {
+                    startActivity(android.content.Intent(this@MainActivity, MapActivity::class.java))
+                    tabLayout.selectTab(tabLayout.getTabAt(0))
+                }
+            }
+            override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
+            override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
+        })
+
         repository = RestaurantRepository(this)
 
         val recyclerView = findViewById<RecyclerView>(R.id.list_restaurants)
@@ -133,6 +147,21 @@ class MainActivity : AppCompatActivity() {
     override fun onLowMemory() {
         super.onLowMemory()
         mapView.onLowMemory()
+    }
+
+    override fun onCreateOptionsMenu(menu: android.view.Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_map -> {
+                startActivity(android.content.Intent(this, MapActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun showAddDialog(adapter: RestaurantAdapter) {
