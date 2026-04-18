@@ -23,7 +23,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
-        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar_map).let { setSupportActionBar(it) }
+        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar_map).let {
+            setSupportActionBar(
+                it
+            )
+        }
         supportActionBar?.title = "Map"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -35,13 +39,22 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         mapView.getMapAsync(this)
 
         val searchBox = findViewById<EditText>(R.id.edit_map_search)
-        searchBox.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                filterMarkers(s.toString())
+        searchBox.setOnEditorActionListener { _, _, _ ->
+            val query = searchBox.text.toString()
+            if (query.isNotBlank()) {
+                val geocoder = android.location.Geocoder(this)
+                val results = geocoder.getFromLocationName(query, 1)
+                if (results != null && results.isNotEmpty()) {
+                    val location = results[0]
+                    googleMap?.moveCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(location.latitude, location.longitude), 12f
+                        )
+                    )
+                }
             }
-        })
+            true
+        }
     }
 
     override fun onMapReady(map: GoogleMap) {
