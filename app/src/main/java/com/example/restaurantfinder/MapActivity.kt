@@ -1,8 +1,6 @@
 package com.example.restaurantfinder
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
