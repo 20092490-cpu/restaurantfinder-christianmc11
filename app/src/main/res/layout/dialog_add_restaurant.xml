@@ -23,4 +23,22 @@
         android:inputType="text"
         android:layout_marginTop="16dp"/>
 
+    <EditText
+        android:id="@+id/edit_lat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Latitude (e.g. 51.5074)"
+        android:textColor="#000000"
+        android:inputType="numberDecimal|numberSigned"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/edit_lng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Longitude (e.g. -0.1278)"
+        android:textColor="#000000"
+        android:inputType="numberDecimal|numberSigned"
+        android:layout_marginTop="16dp"/>
+
 </LinearLayout>

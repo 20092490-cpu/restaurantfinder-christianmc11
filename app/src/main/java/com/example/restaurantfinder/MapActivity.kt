@@ -60,18 +60,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         updateMarkers(restaurants)
     }
 
-    private fun filterMarkers(query: String) {
-        val filtered = if (query.isBlank()) {
-            restaurants
-        } else {
-            restaurants.filter {
-                it.name.lowercase().contains(query.lowercase()) ||
-                        it.address.lowercase().contains(query.lowercase())
-            }
-        }
-        updateMarkers(filtered)
-    }
-
     private fun updateMarkers(list: List<Restaurant>) {
         googleMap?.clear()
         for (restaurant in list) {
