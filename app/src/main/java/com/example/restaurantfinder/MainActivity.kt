@@ -45,9 +45,10 @@ class MainActivity : AppCompatActivity() {
         adapter = RestaurantAdapter(
             restaurants,
             displayRestaurants,
-            onEdit = { position -> showEditDialog(position) },
-            onDelete = { position ->
-                repository.delete(restaurants, position)
+            onEdit = { restaurant -> showEditDialog(restaurant) },
+            onDelete = { restaurant ->
+                restaurants.remove(restaurant)
+                repository.save(restaurants)
                 filterRestaurants(searchBox.text.toString())
             }
         )
@@ -149,6 +150,8 @@ class MainActivity : AppCompatActivity() {
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_add_restaurant, null)
         val nameInput = view.findViewById<EditText>(R.id.edit_name)
         val addressInput = view.findViewById<EditText>(R.id.edit_address)
+        val latInput = view.findViewById<EditText>(R.id.edit_lat)
+        val lngInput = view.findViewById<EditText>(R.id.edit_lng)
 
         AlertDialog.Builder(this)
             .setTitle("Add Favourite")
@@ -156,9 +159,12 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("Add") { _, _ ->
                 val name = nameInput.text.toString()
                 val address = addressInput.text.toString()
+                val lat = latInput.text.toString().toDoubleOrNull() ?: 51.5074
+                val lng = lngInput.text.toString().toDoubleOrNull() ?: -0.1278
                 if (name.isNotBlank() && address.isNotBlank()) {
-                    repository.add(restaurants, Restaurant(name, address))
+                    repository.add(restaurants, Restaurant(name, address, lat, lng))
                     filterRestaurants(searchBox.text.toString())
+                    updateMapMarkers()
                 } else {
                     Toast.makeText(this, "Name and address cannot be empty.", Toast.LENGTH_SHORT).show()
                 }
@@ -167,8 +173,8 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun showEditDialog(position: Int) {
-        val restaurant = restaurants[position]
+    private fun showEditDialog(restaurant: Restaurant) {
+        val index = restaurants.indexOf(restaurant)
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_add_restaurant, null)
         val nameInput = view.findViewById<EditText>(R.id.edit_name)
         val addressInput = view.findViewById<EditText>(R.id.edit_address)
@@ -182,7 +188,7 @@ class MainActivity : AppCompatActivity() {
                 val name = nameInput.text.toString()
                 val address = addressInput.text.toString()
                 if (name.isNotBlank() && address.isNotBlank()) {
-                    repository.update(restaurants, position, Restaurant(name, address))
+                    repository.update(restaurants, index, Restaurant(name, address))
                     filterRestaurants(searchBox.text.toString())
                 } else {
                     Toast.makeText(this, "Name and address cannot be empty.", Toast.LENGTH_SHORT).show()
