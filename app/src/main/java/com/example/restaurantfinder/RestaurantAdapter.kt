@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 class RestaurantAdapter(
     private val restaurants: MutableList<Restaurant>,
     private val displayRestaurants: MutableList<Restaurant>,
-    private val onEdit: (Int) -> Unit,
-    private val onDelete: (Int) -> Unit
+    private val onEdit: (Restaurant) -> Unit,
+    private val onDelete: (Restaurant) -> Unit
 ) : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -30,8 +30,8 @@ class RestaurantAdapter(
         val restaurant = displayRestaurants[position]
         holder.textName.text = restaurant.name
         holder.textAddress.text = restaurant.address
-        holder.buttonEdit.setOnClickListener { onEdit(position) }
-        holder.buttonDelete.setOnClickListener { onDelete(position) }
+        holder.buttonEdit.setOnClickListener { onEdit(restaurant) }
+        holder.buttonDelete.setOnClickListener { onDelete(restaurant) }
     }
 
     override fun getItemCount() = displayRestaurants.size
