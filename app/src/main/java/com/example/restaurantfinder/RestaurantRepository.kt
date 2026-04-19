@@ -27,12 +27,6 @@ class RestaurantRepository(private val context: Context) {
         return list
     }
 
-    fun delete(list: MutableList<Restaurant>, position: Int): MutableList<Restaurant> {
-        list.removeAt(position)
-        save(list)
-        return list
-    }
-
     fun update(list: MutableList<Restaurant>, position: Int, restaurant: Restaurant): MutableList<Restaurant> {
         list[position] = restaurant
         save(list)
